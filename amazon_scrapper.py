@@ -8,7 +8,8 @@ from headers import headers
 
 # google-bot header : Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 # Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1
-#TODO: use mutiple headers
+#TODO: implement an algorithm to group same product together
+#TODO: also fetch ratings and how many people rated the product and product name
 #TODO: ___ from fake_useragent import UserAgent headers = {"User_Agent":UserAgent().random}
 def get_amazon_products(headers):
   
