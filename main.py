@@ -1,5 +1,7 @@
 from playwright.sync_api import sync_playwright
 from google_lens import run
+from amazon_scrapper import get_amazon_products
+from headers import headers
 import time
 
 # Start the timer
@@ -9,10 +11,22 @@ image_url2 ='https://shop.medindia.com/content/images/thumbs/0001450_morpheme-me
 with sync_playwright() as playwright:
    name_list , name = run(playwright , image_url)
 
+#scrape amazon using the info from google lens
+# Calling the function to get the products
+print("Searching for :", name)
+start_time_amazon = time.time()
+products = get_amazon_products(headers , name )
+
+# Print the retrieved products
+if products:
+    for product in products:
+        print(product)
+else:
+    print("Failed to retrieve product information.")
+
+elapsed_time_amazon = time.time() - start_time_amazon
+print("Elapsed time:", elapsed_time_amazon, "seconds")
+
 # Calculate the elapsed time
 elapsed_time = time.time() - start_time
-
-# Print the results and the elapsed time
-print("Name list:", name_list)
-print("Name:", name)
 print("Elapsed time:", elapsed_time, "seconds")
