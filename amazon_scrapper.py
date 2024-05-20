@@ -71,17 +71,17 @@ def get_amazon_products(headers , search_query):
 
             # Extract number of ratings
             number_of_ratings_tag = product.find('span', class_='a-size-base s-underline-text')
-            number_of_ratings = number_of_ratings_tag.get_text() if number_of_ratings_tag else "No ratings"
+            number_of_ratings = number_of_ratings_tag.get_text() if number_of_ratings_tag else "N/A"
 
             # Create product data dictionary
             product_data = {
-                "product_link": product_link,
+                "product_url": product_link,
                 "product_id": product_amazon_id,
                 "price": price,
-                "image_link": image_link,
+                "image_url": image_link,
                 "product_name": product_name,
                 "rating": rating,
-                "number_of_ratings": number_of_ratings
+                "num_ratings": number_of_ratings
             }
             products.append(product_data)
 
