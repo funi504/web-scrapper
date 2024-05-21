@@ -20,6 +20,7 @@ async def get_takealot_products( search_query):
     async with async_playwright() as playwright:
 
         base_url = "https://www.takealot.com/"
+        base_for_product_url = "https://www.takealot.com"
         encoded_query = quote_plus(search_query)
         search_url = f"{base_url}all?_sb=1&_r=1&_si=0042de8ba5dd00715c1d7950eea9c2f7&qsearch={encoded_query}"
         
@@ -61,7 +62,11 @@ async def get_takealot_products( search_query):
 
             # Extract the product URL
             url_tag = product.find('a', class_="product-anchor")
-            product_url = url_tag['href'] if url_tag else "N/A"
+            if url_tag:
+                url = url_tag['href'] 
+                product_url = f'{base_for_product_url}{url}'
+            else: 
+                "N/A"
 
             # Extract product image URL
             img_tag = product.find('img', {'data-ref': 'product-thumb'})
@@ -103,5 +108,5 @@ async def get_takealot_products( search_query):
 
 
 
-products =  asyncio.run(get_takealot_products( "samsung phone case s23"))
-print(products)
+#products =  asyncio.run(get_takealot_products( "iphone case s23"))
+#print(products)

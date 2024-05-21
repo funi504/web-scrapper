@@ -12,7 +12,7 @@ import re
 #TODO: also fetch ratings and how many people rated the product
 #TODO: ___ from fake_useragent import UserAgent headers = {"User_Agent":UserAgent().random}
 
-def get_amazon_products(headers , search_query):
+async def get_amazon_products(headers , search_query):
     base_url = "https://www.amazon.co.za"
     encoded_query = quote_plus(search_query)
     search_url = f"{base_url}/s?k={encoded_query}"
