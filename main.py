@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 from google_lens import run
 from amazon_scrapper import get_amazon_products
 from takealot_scrapper import get_takealot_products
+from image_similarity import get_similar_products
 import asyncio
 from headers import headers
 import time
@@ -26,6 +27,10 @@ all_results = asyncio.run(main())
 end = time.time()
 
 time_elapsed = end - start
+#print(all_results)
+print(f'time elapsed for all ai stuff : {time_elapsed}')
 
-print(all_results)
-print(f'time elapsed : {time_elapsed}')
+print(f' first product : {all_results[0][0]}')
+similar = get_similar_products(all_results[0][0], all_results[0])
+print(f'similar results : {similar}')
+print(f'to comapre : {time.time() - end}')

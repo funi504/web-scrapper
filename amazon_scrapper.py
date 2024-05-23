@@ -81,7 +81,8 @@ async def get_amazon_products(headers , search_query):
                 "image_url": image_link,
                 "product_name": product_name,
                 "rating": rating,
-                "num_ratings": number_of_ratings
+                "num_ratings": number_of_ratings,
+                "store": "amazon"
             }
             products.append(product_data)
 

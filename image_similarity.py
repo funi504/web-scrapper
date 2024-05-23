@@ -6,6 +6,7 @@ import torch.nn as nn
 import torchvision.transforms as transforms
 from torchvision import models
 import numpy as np
+import time
 
 # Function to download image
 def download_image(url):
@@ -16,8 +17,8 @@ def download_image(url):
 # Function to preprocess the image
 def preprocess_image(image):
     preprocess = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
+        transforms.Resize(250),  # EfficientNet-B7 expects larger images
+        transforms.CenterCrop(250),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
@@ -36,26 +37,47 @@ def compare_embeddings(embedding1, embedding2):
     similarity = cosine_similarity(embedding1, embedding2)
     return similarity.item()
 
-# Load pre-trained ResNet model and remove the final classification layer
-resnet_model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
-resnet_model = nn.Sequential(*list(resnet_model.children())[:-1])  # Remove the classification layer
+# Load pre-trained EfficientNet-B7 model and remove the final classification layer
+efficientnet_model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.IMAGENET1K_V1)
+resnet_model = nn.Sequential(*list(efficientnet_model.children())[:-1])  # Remove the classification layer
 
 # Example usage
-amazon_image_url = 'https://m.media-amazon.com/images/I/61TFeIzdtgL._AC_UL320_.jpg'
-image_url2 = 'https://m.media-amazon.com/images/I/71mwjqWWUxL._AC_UL320_.jpg'
+amazon_image_url = 'https://i5-images.massmart.co.za/asr/57c94410-9433-4c4c-82fd-064fa8d297e5.1ea0f9768bc3599a3663a16af55c00c2.jpeg'
+makro_image_url = 'https://i5-images.massmart.co.za/asr/3a067d37-284a-4c5a-928b-210c9e285e7c.5ea820a7226e6ca1797098d522b6e746.jpeg'
 
 # Download and preprocess images
 amazon_image = preprocess_image(download_image(amazon_image_url))
-other_store_image = preprocess_image(download_image(image_url2))
+other_store_image = preprocess_image(download_image(makro_image_url))
 
+similar_products = []
+def get_similar_products(reference_product , all_products):
+
+    reference_image_embedding = get_image_embedding(resnet_model ,preprocess_image(download_image(reference_product['image_url'])))
+
+    for product in all_products:
+        image_embedding = get_image_embedding(resnet_model,preprocess_image(download_image(product['image_url'])))
+        similarity_score = compare_embeddings(reference_image_embedding , image_embedding)
+
+        if similarity_score >= 0.8:
+            similar_products.append(product)
+
+        elif similarity_score >= 0.5 and product['store'] != reference_product['store']:
+            similar_products.append(product)
+
+    return similar_products
+
+"""
+start = time.time()
 # Get image embeddings
 amazon_embedding = get_image_embedding(resnet_model, amazon_image)
 other_store_embedding = get_image_embedding(resnet_model, other_store_image)
+end = time.time()
 
+print(f'finished with ai stuff : {end - start} ')
 # Compare embeddings
 similarity_score = compare_embeddings(amazon_embedding, other_store_embedding)
 print(f"Cosine Similarity: {similarity_score}")
-
+print(f'finished comparing : {time.time() - end }')
 # Define a threshold for similarity (1 means identical, 0 means completely different)
 similarity_threshold = 0.8  # Adjust based on your needs
 if similarity_score >= similarity_threshold:
@@ -63,5 +85,5 @@ if similarity_score >= similarity_threshold:
 else:
     print("The images are different.")
 
-
+"""
 

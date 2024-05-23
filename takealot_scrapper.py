@@ -101,7 +101,8 @@ async def get_takealot_products( search_query):
                 'image_url': product_img_url,
                 'rating': product_rating,
                 'num_ratings': num_ratings,
-                'product_id': product_id
+                'product_id': product_id,
+                "store":"takealot"
             })
 
         return products
