@@ -1,5 +1,6 @@
 from http import client
 import os
+from routes.text_search import text_search
 import flask
 from flask import *
 from flask_bcrypt import Bcrypt
@@ -11,6 +12,10 @@ from config import ApplicationConfig ,configEmail
 from routes.register import register_user
 from routes.login import login_user
 from routes.confirm_email import confirm_user_email
+from routes.change_password import change_user_password
+from routes.forgot_password import forgot_user_password
+from routes.image_search import image_search
+from routes.text_search import text_search
 import datetime
 from urllib.parse import urlparse
 
@@ -39,6 +44,16 @@ def confirm_email(token):
     resp = confirm_user_email(token , s ,User ,db , datetime , SignatureExpired)
     return resp
 
+@app.route('/change_password/<token>', methods=['POST', 'GET'])
+def change_my_password(token):
+    resp = change_user_password(token ,request , s , User , bcrypt ,db ,render_template)
+    return resp
+
+@app.route('/forget_password',methods=["POST"])
+def forgot_my_password():
+    resp = forgot_user_password(configEmail , app , request , s ,Message , url_for , mail , jsonify)
+    return resp
+
 @app.route('/login', methods=['POST'])
 def log_user_in():
     resp = login_user(configEmail,app,request,User,bcrypt,jsonify,Message,s,url_for,mail,session,flask)
@@ -49,10 +64,18 @@ def logout():
     session.pop("user_id")
     return "200"
 
+@app.route('/image_search', methods=['GET','POST'])
+def search_by_image():
+    resp = image_search()
+    return resp
 
+@app.route('/text_search', methods=['GET','POST'])
+def search_by_text():
+    resp = text_search('phone case')
+    return resp
 
 # main driver function
 if __name__ == '__main__':
  
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    app.run('localhost', 8080)
+    app.run('localhost', 8080 , debug=True)

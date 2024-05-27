@@ -44,7 +44,7 @@ def register_user( configEmail , app ,request ,bcrypt ,User, jsonify ,db , s , M
 
         msg = Message('Confirm Email', sender='nekhungunifunanani9@gmail.com', recipients=[email])
 
-        link = url_for('confirm_my_email', token=token, _external=True)
+        link = url_for('confirm_email', token=token, _external=True)
 
         msg.body = 'Your link is {}'.format(link)
 
